@@ -127,14 +127,14 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-dat <- read_excel("dat_raw.xlsx", sheet = "Oligoquetos")
+dat <- read_excel("datos_raw_2.xlsx", sheet = "Oligoquetos")
 
 dat1 <- dat|>
   mutate(Sitio = as.numeric(Sitio))|>
   group_by(Localidad, Sitio, Zona, Nucleo)|>
   summarise(densidad = length(long))
 
-dat2 <- read_excel("dat_raw.xlsx", sheet = "diseno")|>
+dat2 <- read_excel("datos_raw_2.xlsx", sheet = "diseno")|>
   select(-ID)|>
   drop_na()
   
