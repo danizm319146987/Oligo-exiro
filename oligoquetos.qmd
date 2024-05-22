@@ -105,8 +105,7 @@ Here is an equation: $$
   f_{X}(x) = \left(\frac{\alpha}{\beta}\right)
   \left(\frac{x}{\beta}\right)^{\alpha-1}
   e^{-\left(\frac{x}{\beta}\right)^{\alpha}}; 
-  \alpha,\beta,x > 0 .
-$$
+  \alpha,\beta,x > 0$$
 
 Inline equations work as well: $\sum_{i = 2}^\infty\{\alpha_i^\beta\}$
 
@@ -122,7 +121,30 @@ Inline equations work as well: $\sum_{i = 2}^\infty\{\alpha_i^\beta\}$
 #| fig-align: center
 #| out-width: 50%
 #| echo: false
-plot(runif(25), runif(25))
+
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+dat <- read_excel("dat_raw.xlsx", sheet = "Oligoquetos")
+
+dat1 <- dat|>
+  mutate(Sitio = as.numeric(Sitio))|>
+  group_by(Localidad, Sitio, Zona, Nucleo)|>
+  summarise(densidad = length(long))
+
+dat2 <- read_excel("dat_raw.xlsx", sheet = "diseno")|>
+  select(-ID)|>
+  drop_na()
+  
+densidad_raw <- rbind(dat1, dat2)|>
+  arrange(Localidad, Sitio, Zona)
+
+densidad <- densidad_raw|>
+  group_by(Localidad, Sitio, Zona)|>
+  summarise(Promedio = round(mean(densidad),1), DE = round(sd(densidad),1))
+
 ```
 
 # Tables coming from R
@@ -136,9 +158,9 @@ rm <-
 
 ```{r}
 #| label: tbl-simple
-#| tbl-cap: Caption centered above table
-#| echo: true
-knitr::kable(head(mtcars)[,1:4]) #Funcion para tablas
+#| tbl-cap: Densidad promedio de Tubificoides diazi en Dzilam y El Cuyo
+#| echo: false
+knitr::kable(densidad)
 ```
 
 # References {.unnumbered}
